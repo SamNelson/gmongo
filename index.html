@@ -1,0 +1,312 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>GMongo by poiati</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>GMongo</h1>
+        <p>A Groovy wrapper to the mongodb Java driver</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/poiati/gmongo" class="button fork"><strong>Fork On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/poiati/gmongo/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/poiati/gmongo/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <h1>Goal</h1>
+
+<p>The goal of this project is to provide a more simple, easy to use and less verbose API to work with mongodb using the Groovy programming language.</p>
+
+<p>More information can be found here: <a href="http://blog.paulopoiati.com">http://blog.paulopoiati.com</a>.</p>
+
+<h1>Maven</h1>
+
+<p>All versions of the project can be found in the maven central repository:</p>
+
+<pre><code><a href="http://repo1.maven.org/maven2/com/gmongo/gmongo/">http://repo1.maven.org/maven2/com/gmongo/gmongo/</a>
+</code></pre>
+
+<h1>Usage</h1>
+
+<p>com.gmongo.GMongo doesn't extends com.mongodb.Mongo. It delegate all methods calls to a Mongo instance. If
+you need to get the Mongo reference just call com.gmongo.GMongo#getMongo.</p>
+
+<p>Sample:</p>
+
+<div class="highlight">
+<pre><span class="c1">// To download GMongo on the fly and put it at classpath</span>
+<span class="nd">@Grab</span><span class="o">(</span><span class="n">group</span><span class="o">=</span><span class="s1">'com.gmongo'</span><span class="o">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">'gmongo'</span><span class="o">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">'0.9.5'</span><span class="o">)</span>
+<span class="kn">import</span> <span class="nn">com.gmongo.GMongo</span>
+<span class="c1">// Instantiate a com.gmongo.GMongo object instead of com.mongodb.Mongo</span>
+<span class="c1">// The same constructors and methods are available here</span>
+<span class="kt">def</span> <span class="n">mongo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GMongo</span><span class="o">()</span>
+
+<span class="c1">// Get a db reference in the old fashion way</span>
+<span class="kt">def</span> <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="na">getDB</span><span class="o">(</span><span class="s2">"gmongo"</span><span class="o">)</span>
+
+<span class="c1">// Collections can be accessed as a db property (like the javascript API)</span>
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">myCollection</span> <span class="k">instanceof</span> <span class="n">com</span><span class="o">.</span><span class="na">mongodb</span><span class="o">.</span><span class="na">DBCollection</span>
+<span class="c1">// They also can be accessed with array notation </span>
+<span class="k">assert</span> <span class="n">db</span><span class="o">[</span><span class="s1">'my.collection'</span><span class="o">]</span> <span class="k">instanceof</span> <span class="n">com</span><span class="o">.</span><span class="na">mongodb</span><span class="o">.</span><span class="na">DBCollection</span>
+
+<span class="c1">// Insert a document</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">insert</span><span class="o">([</span><span class="nl">name:</span> <span class="s1">'Groovy'</span><span class="o">])</span>
+<span class="c1">// A less verbose way to do it</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Ruby'</span><span class="o">)</span>
+<span class="c1">// Yet another way</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="nl">name:</span> <span class="s1">'Python'</span><span class="o">]</span>
+
+<span class="c1">// Insert a list of documents</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span> <span class="o">&lt;&lt;</span> <span class="o">[[</span><span class="nl">name:</span> <span class="s1">'Javascript'</span><span class="o">,</span> <span class="nl">type:</span> <span class="s1">'prototyped'</span><span class="o">],</span> <span class="o">[</span><span class="nl">name:</span> <span class="s1">'Ioke'</span><span class="o">,</span> <span class="nl">type:</span> <span class="s1">'prototyped'</span><span class="o">]]</span>
+
+<span class="kt">def</span> <span class="n">statics</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'Java'</span><span class="o">,</span> <span class="s1">'C'</span><span class="o">,</span> <span class="s1">'VB'</span><span class="o">]</span>
+
+<span class="n">statics</span><span class="o">.</span><span class="na">each</span> <span class="o">{</span>
+    <span class="n">db</span><span class="o">.</span><span class="na">languages</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="nl">name:</span> <span class="n">it</span><span class="o">,</span> <span class="nl">type:</span> <span class="s1">'static'</span><span class="o">]</span>
+<span class="o">}</span>
+
+<span class="c1">// Finding the first document</span>
+<span class="kt">def</span> <span class="n">lang</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">findOne</span><span class="o">()</span>
+<span class="k">assert</span> <span class="n">lang</span><span class="o">.</span><span class="na">name</span> <span class="o">==</span> <span class="s1">'Groovy'</span>
+<span class="c1">// Set a new property</span>
+<span class="n">lang</span><span class="o">.</span><span class="na">site</span> <span class="o">=</span> <span class="s1">'<a href="http://groovy.codehaus.org/">http://groovy.codehaus.org/</a>'</span>
+<span class="c1">// Save the new version</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">save</span> <span class="n">lang</span>
+
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">findOne</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Groovy'</span><span class="o">).</span><span class="na">site</span> <span class="o">==</span> <span class="s1">'<a href="http://groovy.codehaus.org/">http://groovy.codehaus.org/</a>'</span>
+
+<span class="c1">// Counting the number of documents in the collection</span>
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nl">type:</span> <span class="s1">'static'</span><span class="o">).</span><span class="na">count</span><span class="o">()</span> <span class="o">==</span> <span class="mi">3</span>
+
+<span class="c1">// Another way to count</span>
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">count</span><span class="o">(</span><span class="nl">type:</span> <span class="s1">'prototyped'</span><span class="o">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+<span class="c1">// Updating a document using the '$set' operator</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">update</span><span class="o">([</span><span class="nl">name:</span> <span class="s1">'Python'</span><span class="o">],</span> <span class="o">[</span><span class="n">$set</span><span class="o">:</span> <span class="o">[</span><span class="nl">paradigms:</span> <span class="o">[</span><span class="s1">'object-oriented'</span><span class="o">,</span> <span class="s1">'functional'</span><span class="o">,</span> <span class="s1">'imperative'</span><span class="o">]]])</span>
+
+<span class="k">assert</span> <span class="mi">3</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">findOne</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Python'</span><span class="o">).</span><span class="na">paradigms</span><span class="o">.</span><span class="na">size</span><span class="o">()</span>
+
+<span class="c1">// Using upsert</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">update</span><span class="o">([</span><span class="nl">name:</span> <span class="s1">'Haskel'</span><span class="o">],</span> <span class="o">[</span><span class="n">$set</span><span class="o">:</span> <span class="o">[</span><span class="nl">paradigms:</span> <span class="o">[</span><span class="s1">'functional'</span><span class="o">]]],</span> <span class="kc">true</span><span class="o">)</span>
+
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">findOne</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Haskel'</span><span class="o">)</span>
+
+<span class="c1">// Removing some documents</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="nl">type:</span> <span class="s1">'prototyped'</span><span class="o">)</span>
+<span class="k">assert</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">count</span><span class="o">(</span><span class="nl">type:</span> <span class="s1">'prototyped'</span><span class="o">)</span>
+
+<span class="c1">// Removing all documents</span>
+<span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">remove</span><span class="o">([:])</span>
+<span class="k">assert</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">count</span><span class="o">()</span>
+
+<span class="c1">// To ensure complete consistency in a session use DB#inRequest</span>
+<span class="c1">// It is analogous to user DB#requestStarted and DB#requestDone</span>
+<span class="n">db</span><span class="o">.</span><span class="na">inRequest</span> <span class="o">{</span>
+    <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Objective-C'</span><span class="o">)</span>
+    <span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">db</span><span class="o">.</span><span class="na">languages</span><span class="o">.</span><span class="na">count</span><span class="o">(</span><span class="nl">name:</span> <span class="s1">'Objective-C'</span><span class="o">)</span>
+<span class="o">}</span>
+</pre>
+</div>
+
+
+<h2>Sorting and Pagination</h2>
+
+<div class="highlight">
+<pre><span class="nd">@Grab</span><span class="o">(</span><span class="n">group</span><span class="o">=</span><span class="s1">'com.gmongo'</span><span class="o">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">'gmongo'</span><span class="o">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">'0.9.5'</span><span class="o">)</span>
+<span class="kn">import</span> <span class="nn">com.gmongo.GMongo</span>
+
+<span class="kt">def</span> <span class="n">mongo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GMongo</span><span class="o">()</span>
+<span class="kt">def</span> <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="na">getDB</span><span class="o">(</span><span class="s2">"gmongo"</span><span class="o">)</span>
+
+<span class="c1">// Make sure that the collection is empty</span>
+<span class="n">db</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">drop</span><span class="o">()</span>
+
+<span class="c1">// Insert 100 documents with any random value</span>
+<span class="mi">100</span><span class="o">.</span><span class="na">times</span> <span class="o">{</span>
+    <span class="n">db</span><span class="o">.</span><span class="na">example</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="nl">time:</span> <span class="n">it</span><span class="o">,</span> <span class="nl">random:</span> <span class="o">(</span><span class="n">Integer</span><span class="o">)(</span><span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">*</span> <span class="mi">100</span><span class="o">)]</span>
+<span class="o">}</span>
+
+<span class="kt">def</span> <span class="n">at</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1">// Find out how many documents are in the collection</span>
+<span class="kt">def</span> <span class="n">total</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">find</span><span class="o">().</span><span class="na">count</span><span class="o">()</span>
+
+<span class="c1">// Sort the documents by the 'random' property ascending and Paginate over it 10 by 10</span>
+<span class="k">while</span> <span class="o">(</span><span class="n">at</span> <span class="o">&lt;</span> <span class="n">total</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">println</span> <span class="s2">"At page: ${at / 10}\n"</span>
+    <span class="n">db</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">find</span><span class="o">().</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">skip</span><span class="o">(</span><span class="n">at</span><span class="o">).</span><span class="na">sort</span><span class="o">(</span><span class="nl">random:</span> <span class="mi">1</span><span class="o">).</span><span class="na">each</span> <span class="o">{</span>
+        <span class="n">println</span> <span class="s2">"\t-- ${it}"</span>
+    <span class="o">}</span>
+    <span class="n">println</span> <span class="s2">"\n--------------------------"</span>
+    <span class="n">at</span> <span class="o">+=</span> <span class="mi">10</span>
+<span class="o">}</span>
+</pre>
+</div>
+
+
+<h2>MapReduce</h2>
+
+<div class="highlight">
+<pre><span class="nd">@Grab</span><span class="o">(</span><span class="n">group</span><span class="o">=</span><span class="s1">'com.gmongo'</span><span class="o">,</span> <span class="n">module</span><span class="o">=</span><span class="s1">'gmongo'</span><span class="o">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">'0.9.5'</span><span class="o">)</span>
+<span class="kn">import</span> <span class="nn">com.gmongo.GMongo</span>
+
+<span class="kt">def</span> <span class="n">mongo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GMongo</span><span class="o">()</span>
+<span class="kt">def</span> <span class="n">db</span> <span class="o">=</span> <span class="n">mongo</span><span class="o">.</span><span class="na">getDB</span><span class="o">(</span><span class="s2">"gmongo"</span><span class="o">)</span>
+
+<span class="kt">def</span> <span class="n">words</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'foo'</span><span class="o">,</span> <span class="s1">'bar'</span><span class="o">,</span> <span class="s1">'baz'</span><span class="o">]</span>
+<span class="kt">def</span> <span class="n">rand</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">()</span>        
+
+<span class="mi">1000</span><span class="o">.</span><span class="na">times</span> <span class="o">{</span> 
+    <span class="n">db</span><span class="o">.</span><span class="na">words</span> <span class="o">&lt;&lt;</span> <span class="o">[</span><span class="nl">word:</span> <span class="n">words</span><span class="o">[</span><span class="n">rand</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">3</span><span class="o">)]]</span>
+<span class="o">}</span>
+
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">words</span><span class="o">.</span><span class="na">count</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1000</span>
+
+<span class="kt">def</span> <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">words</span><span class="o">.</span><span class="na">mapReduce</span><span class="o">(</span>
+    <span class="s2">"""</span>
+<span class="s2">    function map() {</span>
+<span class="s2">        emit(this.word, {count: 1})</span>
+<span class="s2">    }</span>
+<span class="s2">    """</span><span class="o">,</span>
+    <span class="s2">"""</span>
+<span class="s2">    function reduce(key, values) {</span>
+<span class="s2">        var count = 0</span>
+<span class="s2">        for (var i = 0; i &lt; values.length; i++)</span>
+<span class="s2">            count += values[i].count</span>
+<span class="s2">        return {count: count}</span>
+<span class="s2">    }</span>
+<span class="s2">    """</span><span class="o">,</span>
+    <span class="s2">"mrresult"</span><span class="o">,</span>
+    <span class="o">[:]</span> <span class="c1">// No Query</span>
+<span class="o">)</span>
+
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">mrresult</span><span class="o">.</span><span class="na">count</span><span class="o">()</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="k">assert</span> <span class="n">db</span><span class="o">.</span><span class="na">mrresult</span><span class="o">.</span><span class="na">find</span><span class="o">()*.</span><span class="na">value</span><span class="o">*.</span><span class="na">count</span><span class="o">.</span><span class="na">sum</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1000</span>
+</pre>
+</div>
+
+
+<h2>Grouping</h2>
+
+<p>Grouping can also be achieved. Example:</p>
+
+<div class="highlight">
+<pre><span class="nd">@Grab</span><span class="o">(</span><span class="s2">"com.gmongo:gmongo:0.9.5"</span><span class="o">)</span>
+<span class="kn">import</span> <span class="nn">com.gmongo.GMongo</span>
+
+<span class="kt">def</span> <span class="n">gmongo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GMongo</span><span class="o">(</span><span class="s2">"localhost:27017"</span><span class="o">)</span>
+
+<span class="kt">def</span> <span class="n">db</span> <span class="o">=</span> <span class="n">gmongo</span><span class="o">.</span><span class="na">getDB</span><span class="o">(</span><span class="s2">"test"</span><span class="o">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">drop</span><span class="o">()</span>
+
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">10</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">14</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">45</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span>  <span class="mi">9</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">3</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">32</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">11</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">3</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">34</span><span class="o">)</span>
+
+<span class="kt">def</span> <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">group</span><span class="o">([</span><span class="nl">day:</span> <span class="kc">true</span><span class="o">],</span> <span class="o">[:],</span> <span class="o">[</span><span class="nl">count:</span> <span class="mi">0</span><span class="o">],</span> <span class="s2">"function(doc, out) { out.count += doc.total }"</span><span class="o">)</span>
+
+<span class="c1">// Will output [[day:1.0, count:33.0], [day:2.0, count:56.0], [day:3.0, count:66.0]]</span>
+<span class="n">println</span> <span class="n">result</span>
+</pre>
+</div>
+
+
+<p>And a more advanced grouping using 'keyf':</p>
+
+<div class="highlight">
+<pre><span class="nd">@Grab</span><span class="o">(</span><span class="s2">"com.gmongo:gmongo:0.9.5"</span><span class="o">)</span>
+<span class="kn">import</span> <span class="nn">com.gmongo.GMongo</span>
+
+<span class="kt">def</span> <span class="n">gmongo</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GMongo</span><span class="o">(</span><span class="s2">"localhost:27017"</span><span class="o">)</span>
+
+<span class="kt">def</span> <span class="n">db</span> <span class="o">=</span> <span class="n">gmongo</span><span class="o">.</span><span class="na">getDB</span><span class="o">(</span><span class="s2">"test"</span><span class="o">)</span>
+
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">drop</span><span class="o">()</span>
+
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">10</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">14</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">45</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">1</span><span class="o">,</span> <span class="nl">total:</span>  <span class="mi">9</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">3</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">32</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">2</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">11</span><span class="o">)</span>
+<span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nl">day:</span> <span class="mi">3</span><span class="o">,</span> <span class="nl">total:</span> <span class="mi">34</span><span class="o">)</span>
+
+<span class="kt">def</span> <span class="n">keyf</span> <span class="o">=</span> <span class="s2">"function(clicks) { return clicks.day % 2 ? { odd: true } : { even: true } }"</span>
+
+<span class="kt">def</span> <span class="n">command</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'$keyf'</span><span class="o">:</span> <span class="n">keyf</span><span class="o">,</span> <span class="nl">cond:</span> <span class="o">[:],</span> <span class="nl">initial:</span> <span class="o">[</span><span class="nl">count:</span> <span class="mi">0</span><span class="o">],</span> <span class="n">$reduce</span><span class="o">:</span> <span class="s2">"function(doc, out) { out.count += doc.total }"</span><span class="o">]</span>
+
+<span class="kt">def</span> <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">clicks</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="n">command</span><span class="o">)</span>
+
+<span class="c1">// Will output [[odd:true, count:99.0], [even:true, count:56.0]]</span>
+<span class="n">println</span> <span class="n">result</span>  
+</pre>
+</div>
+
+
+<h1>Build</h1>
+
+<p>The project is build using gradle. Gradle can be found in: <a href="http://www.gradle.org">http://www.gradle.org</a></p>
+
+<h1>Test</h1>
+
+<p>To run the tests start a mongo instance on localhost:27017</p>
+
+<h1>Support</h1>
+
+<p>Any bug, suggestion or ... whatever.</p>
+
+<p>Email: paulogpoiati@gmail.com</p>
+
+<p>Twitter: <a href="http://twitter.com/poiati">http://twitter.com/poiati</a></p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/poiati">poiati</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-30879506-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
